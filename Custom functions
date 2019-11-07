@@ -1,0 +1,352 @@
+<?php
+
+add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
+
+			function my_theme_enqueue_styles() {
+			 
+			    $parent_style = 'parent-style'; // This is 'twentyfifteen-style' for the Twenty Fifteen theme.
+			 
+			    wp_enqueue_style( $parent_style, get_template_directory_uri() . '/style.css' );
+			    wp_enqueue_style( 'child-style',get_stylesheet_directory_uri() . '/style.css',array( $parent_style ),
+			        wp_get_theme()->get('Version') );
+
+			}
+
+
+   add_shortcode('addmedia','insert_media');
+
+				function insert_media(){
+					              echo "<h1>Media</h1>";
+				            }
+
+  add_shortcode('my_shortcode', 'print_shortcode');
+				function print_shortcode(){
+				                echo "This is my first Shortcode";
+				               }
+
+  
+ add_shortcode( 'foobar', 'foobar_func' );
+				function foobar_func( $atts ){
+				                    echo "foo and bar";
+				              }
+  
+ add_shortcode( 'gallery', 'gallery_func' );
+				function gallery_func(){
+				                    $image="12";
+				                    return $image;
+				             }
+				
+
+
+
+
+
+
+add_action('init', 'cw_post_type_news');
+          /*Custom Post type start*/
+ function cw_post_type_news() {
+       $supports = array(
+				        'title', // post title
+				        'editor', // post content
+				        'author', // post author
+				        'thumbnail', // featured images
+				        'excerpt', // post excerpt
+				        'custom-fields', // custom fields
+				        'comments', // post comments
+				        'revisions', // post revisions
+				        'post-formats', // post formats
+				       );
+
+	   $labels = array(
+				       'name' => _x('news', 'plural'),
+				       'singular_name' => _x('news', 'singular'),
+				       'menu_name' => _x('News', 'admin menu'),
+				       'name_admin_bar' => _x('news', 'admin bar'),
+				       'add_new' => _x('Add New', 'add new'),
+				       'add_new_item' => __('Add New news'),
+				       'new_item' => __('New news'),
+				       'edit_item' => __('Edit news'),
+				       'view_item' => __('View news'),
+				       'all_items' => __('All news'),
+				       'search_items' => __('Search news'),
+				       'not_found' => __('No news found.'),
+				       );
+	    $args = array(
+				       'supports' => $supports,
+				       'labels' => $labels,
+				       'public' => true,
+				       'query_var' => true,
+				       'rewrite' => array('slug' => 'news'),
+				       'has_archive' => true,
+				       'hierarchical' => false,
+				        
+				    );
+	  register_post_type('news', $args);
+		     
+		      }	
+				/*Custom Post type end*/
+
+
+
+
+
+
+
+
+
+
+
+  // The custom function MUST be hooked to the init action hook
+  add_action( 'init', 'lc_register_movie_post_type' );
+
+	  // A custom function that calls register_post_type
+	  function lc_register_movie_post_type() {
+				$rewrite = array(
+					    'slug' => ('projects'));
+				  // Set various pieces of text, $labels is used inside the $args array
+				$labels = array(
+				     'name' => _x( 'Movies', 'post type general name' ),
+				     'singular_name' => _x( 'Movie', 'post type singular name' ));
+
+				  // Set various pieces of information about the post type
+				 $args = array(
+				    'labels' => $labels,
+				    'description' => 'My custom post type',
+				    'public' => true,
+				     );
+
+
+				  // Register the movie post type with all the information contained in the $arguments array
+	   register_post_type( 'movie', $args );
+				
+		}
+
+
+
+
+// add_role( $role, $display_name, $capabilities );
+
+// function add_roles_on_plugin_activation() {
+//        add_role( 'custom_role', 'Custom Subscriber', array( 'read' => true, 'edit_posts' => true ) );
+//    }
+//    register_activation_hook( __FILE__, 'add_roles_on_plugin_activation' );
+
+// $result = add_role(
+//     'Customer',
+//     __( 'Customer' ),
+//     array(
+//         'read'         => true,  // true allows this capability
+//         'edit_posts'   => true,
+//         'delete_posts' => false, // Use false to explicitly deny
+//     )
+// );
+
+// add_action('init','to_set_cookie');
+
+// function to_set_cookie(){
+ 
+//  $path = parse_url(get_option('siteurl'), PHP_URL_PATH);
+//   $host = parse_url(get_option('siteurl'), PHP_URL_HOST);
+//   $expiry = strtotime('+1 month');
+//   setcookie('my_first_cookie_name','my_first_cookie_value',$expiry,$path,$host);
+
+// }
+
+
+
+  add_action('wp_logout','auto_redirect_external_after_logout');
+		  function auto_redirect_external_after_logout(){
+				wp_redirect(site_url().'/login' );
+				  exit();
+				}
+
+	   add_action( 'admin_menu', 'extra_post_info_menu' );  
+		 function extra_post_info_menu(){ 
+				                  $page_title = 'Custom Menu';
+				                  $menu_title = 'New Menu';   
+				                  $capability = 'manage_options';   
+				                  $menu_slug  = 'dashboard';   
+				                  $function   = 'my_plugin_menu';   
+				                  $icon_url   = 'dashicons-welcome-add-page';   
+				                  $position   = 5;    
+				                  add_menu_page( $page_title,$menu_title,$capability,$menu_slug,$function,$icon_url,$position ); 
+				               }
+				  
+
+
+				// For admin Menu
+				add_action('admin_menu', 'my_plugin_menu');
+
+				function my_plugin_menu() {
+				   
+					add_menu_page('my-menu','my-menu','manage_options','my-menu','focus');	
+				}
+
+						//For admin Submenu Page
+						add_action('admin_menu', 'wpdocs_register_my_custom_submenu_page');
+						 
+						function wpdocs_register_my_custom_submenu_page() {
+						    add_submenu_page('my-menu','My Custom Submenu Page','Submenu 1','manage_options','my-custom-submenu-page','wpdocs_my_custom_submenu_page_callback');
+						    add_submenu_page('my-menu','My Custom Submenu Page','Submenu 2','manage_options','my-custom-submenu-page','wpdocs_my_custom_submenu_page_callback');
+						              }
+						 
+						function wpdocs_my_custom_submenu_page_callback() {
+						    echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
+						        echo '<h2>My Custom Submenu Page</h2>';
+						    echo '</div>';
+						              }
+
+						function focus(){
+						              include('image.php');
+						           }
+						function fo(){
+						              include('registration.php');
+						              }
+                         
+
+      //                   add_action('custom_hook', 'hello_wordpress', 7);
+						// function custom_hook() {
+						// 	            do_action('custom_hook');
+						//               }
+						// function hello_wordpress() {
+						// 	           echo '<h1>Hello Jitendra! This is your first own created hook.</h1>';
+						//               }
+						
+                        
+
+         add_action( 'admin_enqueue_scripts', 'my_admin_scripts' );
+			function my_admin_scripts() {
+			   wp_enqueue_script( 'jquery', realpath(__DIR__.'/../../..').'/wp-includes/js/jquery/jquery.js' , array( 'jquery' ), '1.0.0', true );
+			   }
+						
+						 
+
+
+
+
+			 // Hooking up our function to theme setup
+			add_action( 'init', 'create_properties_posttype' );
+
+			function create_properties_posttype() {
+							                $supports = array(
+										                'title', // post title
+										                'editor', // post content
+										                'author', // post author
+										                'thumbnail', // featured images
+										                'excerpt', // post excerpt
+										                'custom-fields', // custom fields
+										                'comments', // post comments
+										                'revisions', // post revisions
+										                'post-formats', // post formats
+										                );
+						              $labels = array(
+						  	                        'name' => _x('properties', 'plural'),
+						                            'singular_name' => _x('property', 'singular'),
+						                            'menu_name' => _x('Property', 'admin menu'),
+						                            'name_admin_bar' => _x('property', 'admin bar'),
+						                            'add_new' => _x('Add New', 'add new'),
+						                            'add_new_item' => __('Add New Property'),
+						                            'new_item' => __('New property'),
+						                            'edit_item' => __('Edit property'),
+						                            'view_item' => __('View property'),
+						                            'all_items' => __('All property'),
+						                            'search_items' => __('Search propertry'),
+						                            'not_found' => __('No property found.'),
+						                          );
+
+						            $prop = array(
+						                         'supports' => $supports,
+						                         'labels' => $labels,
+						                         'public' => true,
+						                         'show_in_menu' => true,
+						                         'query_var' => true,
+						                         'rewrite' => array('slug' => 'properties'),
+						                         'has_archive' => true,
+						                         'hierarchical' => false,
+						                         'taxonomies'    => array('city','propertytype')
+						                         );
+						                register_post_type( 'Properties',$prop);
+						       }
+         
+
+
+
+
+
+
+		//hook into the init action and call create_city_taxonomies when it fires
+		add_action( 'init', 'create_city_hierarchical_taxonomy', 0 );
+						 
+		  //create a custom taxonomy name it City for your posts
+						 
+		  function create_city_hierarchical_taxonomy() {				 
+		   // Add new taxonomy, make it hierarchical like categories
+		   //first do the translations part for GUI
+						 
+			 $labels = array(
+						    'name' => _x( 'city', 'taxonomy general name' ),
+						    'singular_name' => _x( 'city', 'taxonomy singular name' ),
+						    'search_items' =>  __( 'Search City' ),
+						    'all_items' => __( 'All city' ),
+						    'parent_item' => __( 'Parent City' ),
+						    'parent_item_colon' => __( 'Parent city:' ),
+						    'edit_item' => __( 'Edit city' ), 
+						    'update_item' => __( 'Update city' ),
+						    'add_new_item' => __( 'Add New city' ),
+						    'new_item_name' => __( 'New city Name' ),
+						    'menu_name' => __( 'city' ),
+						  );    
+						 
+						// Now register the taxonomy
+						 
+	     register_taxonomy('city',$prop, array(
+						    'hierarchical' => true,
+						    'labels' => $labels,
+						    'show_ui' => true,
+						    'show_admin_column' => true,
+						    'query_var' => true,
+						    'rewrite' => array( 'slug' => 'city' ),
+						  ));
+						 
+						}
+
+
+
+
+      add_action( 'init', 'add_property_type_taxonomy', 0 );
+        function add_property_type_taxonomy(){
+
+
+	    $labels = array(
+                    'name' => _x( 'property type', 'taxonomy general name' ),
+                    'singular_name' => _x( 'Property Type', 'taxonomy singular name' ),
+                    'search_items' =>  __( 'Search Property Type' ),
+                    'all_items' => __( 'All Property Type' ),
+                    'parent_item' => __( 'Parent Property Type' ),
+                    'parent_item_colon' => __( 'Parent Property Type:' ),
+                    'edit_item' => __( 'Edit Property Type' ), 
+                    'update_item' => __( 'Update Property Type' ),
+                    'add_new_item' => __( 'Add New Property Type' ),
+                    'new_item_name' => __( 'New Property Type Name' ),
+                    'menu_name' => __( 'Property Type' ),
+                  );  
+
+     register_taxonomy('propertytype',$prop, array(
+                      'hierarchical' => true,
+                      'labels' => $labels,
+                      'show_ui' => true,
+                      'show_admin_column' => true,
+                      'query_var' => true,
+                      'rewrite' => array( 'slug' => 'property type' ),
+                    ));  
+              }
+
+
+// function new_role(){
+// 	add_role('Customer_role','Customersubscriber',array('read'=>true,'level_0'=>true));
+// }
+// add_action('init','new_role');
+
+
+
+

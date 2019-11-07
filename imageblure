@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Image</title>
+	<style type="text/css">
+   body{
+          background: #2977a4;
+       }
+	     	.container{
+            width: 500px;
+              margin-top: 15%;
+             margin-left: 14%;
+          }
+         button{
+                margin-left: 106px;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                padding: 12px;
+                font-size: 16px;
+                background: #29b399;
+         }
+	</style>
+</head>
+<body>
+   <div class="container">
+   	  <table width="500px">
+   	    <thead>
+   	    	<tr class="img-container">
+   	    		<th><img src="easy.png" class="img-abc" name="imgval[]" ></th>
+            <th><img src="easy.png" class="img-abc" name="imgval[]" ></th>
+            <th><img src="easy.png" class="img-abc" name="imgval[]" ></th>
+            <th><img src="easy.png" class="img-abc" name="imgval[]" ></th>
+             <input type="hidden" name="store" id="" value="">
+   	    	</tr>
+   	    </thead>
+   	  	 <tbody>
+             <tr>
+               <td><button class="btn-abc" id="btn1">A</button></td>
+               <td><button class="btn-abc" id="btn2">B</button></td>
+               <td><button class="btn-abc" id="btn1">C</button></td>
+               <td><button class="btn-abc" id="btn2">D</button></td>
+             </tr>  
+          </tbody>
+   	  </table>
+   </div>
+</body>
+<script src="http://code.jquery.com/jquery-1.8.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+   $(document).ready(function(){
+      $('.img-abc').click(function(){
+          var val=$('.img-abc').val();
+          $(this).css("filter","blur(4px)");
+           $(this).parent().siblings().children('img').each(function(){
+            $(this).css("filter","blur()");
+           });
+      });
+        
+
+        $('.btn-abc').click(function(){
+          var indx = $(this).parent().index();
+          $('.img-container th:eq('+indx+') img').css("filter","blur(4px)");
+           $('.img-container th:eq('+indx+')').siblings().children('img').each(function(){
+            $(this).css("filter","blur()");
+           });
+      });  
+
+     
+
+   });
+</script>
+</html>
